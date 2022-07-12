@@ -2,12 +2,19 @@ import React, { useState } from "react";
 //actions
 import { crearNuevoProducto } from "../actions/productosActions";
 import { useDispatch, useSelector } from "react-redux/es/exports";
+import { useNavigate } from "react-router-dom";
 
 const NuevoProducto = () => {
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState(0);
 
+  let navigate = useNavigate();
+
   const dispatch = useDispatch();
+
+  //Acceder al state del store
+  const cargando = useSelector((state) => state.productos.loading);
+  const error = useSelector((state) => state.productos.error);
 
   const agregarProducto = (producto) => dispatch(crearNuevoProducto(producto));
 
@@ -17,6 +24,8 @@ const NuevoProducto = () => {
     if (nombre.trim() === "" || precio <= 0) return;
 
     agregarProducto({ nombre, precio });
+
+    navigate("/");
   };
 
   return (
@@ -57,6 +66,13 @@ const NuevoProducto = () => {
                 </button>
               </div>
             </form>
+
+            {cargando ? <p>Cargando...</p> : null}
+            {error ? (
+              <p className="alert alert-danger p2 text-center mt-4">
+                Hubo un error
+              </p>
+            ) : null}
           </div>
         </div>
       </div>
